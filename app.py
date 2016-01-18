@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, url_for, request, session
+from flask import Flask, render_template, redirect, url_for, request, session, flash
+
 
 app = Flask(__name__)
 
@@ -9,7 +10,7 @@ app.secret_key = "super secret"
 #route for home
 @app.route('/')
 def home():
-	return "hello world"
+	return render_template ("index.html")
 
 #route for welcome
 @app.route('/welcome')
@@ -25,12 +26,14 @@ def login():
             error = 'Invalid Credentials. Please try again.'
         else:
         	session['logged_in'] = True
+        	flash('good job, you logged it')
         	return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
 @app.route('/logout')
 def logout():
 	session.pop('logged_in', None)
+	flash('you logged out')
 	return redirect(url_for('welcome'))
 
 
