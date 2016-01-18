@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session, flash, g
 from functools import wraps
 import sqlite3
 
@@ -26,7 +26,12 @@ def login_required(f):
 @app.route('/')
 @login_required
 def home():
-	return render_template ("index.html")
+    #use g to store temp value, flask standard
+    g.db = connect_db()
+    cur = g.db.execute('select * from posts')
+    posts = [dict(title = row[0], description=row[1]) for row in cur.fetchall()]
+    g.db.close()
+	return render_template ("index.html", posts = posts)
 
 #route for welcome
 @app.route('/welcome')
