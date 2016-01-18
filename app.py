@@ -1,11 +1,14 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from functools import wraps
+import sqlite3
+
 
 app = Flask(__name__)
 
 #need this for sessions to work right, 
 #def don't keep it here for the long term
 app.secret_key = "super secret"
+app.database = "sample.db"
 
 
 # login required decorator
@@ -48,6 +51,9 @@ def logout():
 	session.pop('logged_in', None)
 	flash('you logged out')
 	return redirect(url_for('welcome'))
+
+def connect_db():
+    return sqlite3.connect(app.database)
 
 
 
