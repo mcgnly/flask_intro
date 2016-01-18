@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
-
+from functools import wrap
 
 app = Flask(__name__)
 
@@ -7,8 +7,21 @@ app = Flask(__name__)
 #def don't keep it here for the long term
 app.secret_key = "super secret"
 
+
+# login required decorator
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first.')
+            return redirect(url_for('login'))
+    return wrap
+
 #route for home
 @app.route('/')
+@login_required
 def home():
 	return render_template ("index.html")
 
@@ -26,7 +39,7 @@ def login():
             error = 'Invalid Credentials. Please try again.'
         else:
         	session['logged_in'] = True
-        	flash('good job, you logged it')
+        	flash('good job, you logged in')
         	return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
