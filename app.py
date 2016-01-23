@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash, g
 from functools import wraps
-import sqlite3
+#import sqlite3
+from flask.ext.sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
@@ -8,8 +9,15 @@ app = Flask(__name__)
 #need this for sessions to work right, 
 #def don't keep it here for the long term
 app.secret_key = "super secret"
-app.database = "sample.db"
 
+#this was for using straight up sqlight
+#app.database = "sample.db"
+
+#change to sqlalchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+
+#create the sqlalchemy object
+db = SQLAlchemy(app)
 
 # login required decorator
 def login_required(f):
@@ -26,12 +34,12 @@ def login_required(f):
 @app.route('/')
 @login_required
 def home():
-    #use g to store temp value, flask standard
-    g.db = connect_db()
-    cur = g.db.execute('select * from posts')
-    #listcomp in python- generates a list with the rows the dicts that the cur.fetchall spit out
-    posts = [dict(title = row[0], description=row[1]) for row in cur.fetchall()]
-    g.db.close()
+    # #use g to store temp value, flask standard
+    # g.db = connect_db()
+    # cur = g.db.execute('select * from posts')
+    # #listcomp in python- generates a list with the rows the dicts that the cur.fetchall spit out
+    # posts = [dict(title = row[0], description=row[1]) for row in cur.fetchall()]
+    # g.db.close()
     return render_template ("index.html", posts = posts)
 
 #route for welcome
@@ -58,8 +66,10 @@ def logout():
 	flash('you logged out')
 	return redirect(url_for('welcome'))
 
-def connect_db():
-    return sqlite3.connect(app.database)
+
+#this was for straight sqlight, don't need it for sqlalchemy
+# def connect_db():
+#     return sqlite3.connect(app.database)
 
 
 
