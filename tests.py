@@ -14,7 +14,7 @@ class FlaskTestCase(unittest.TestCase):
     def test_login_page_loads(self):
         tester = app.test_client(self)
         response = tester.get('/login', content_type='html/text')
-        self.assertTrue('Please login' in response.data)
+        self.assertTrue(('Please login'.encode('utf-8')) in response.data)
 
     #ensure login behaves correctly w correct credentials
     def test_correct_login(self):
@@ -22,8 +22,8 @@ class FlaskTestCase(unittest.TestCase):
         response = tester.post(
         	'/login', 
         	data =dict(username = "admin", password ="admin"),
-        	follow_redirect =True)
-        self.assertIn('you were just logged in', response.data)
+        	follow_redirects =True)
+        self.assertIn(('you were just logged in'.encode('utf-8')), response.data)
 
     #ensure login works right w incorrect credentials
 
