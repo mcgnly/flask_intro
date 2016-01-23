@@ -1,8 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash, g
 from functools import wraps
-#import sqlite3
 from flask.ext.sqlalchemy import SQLAlchemy
-
+# import sqlite3
 
 app = Flask(__name__)
 
@@ -19,10 +18,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 #create the sqlalchemy object
 db = SQLAlchemy(app)
 
+#only now can we import the model, bc only now the db object exists
+from model import * #by * we mean BlogPost, but whatever
+
 # login required decorator
 def login_required(f):
     @wraps(f)
-    def wrap(*args, **kwargs):
+    def wrap(*args, **kwargs): #wtf is this shit?
         if 'logged_in' in session:
             return f(*args, **kwargs)
         else:
@@ -40,6 +42,9 @@ def home():
     # #listcomp in python- generates a list with the rows the dicts that the cur.fetchall spit out
     # posts = [dict(title = row[0], description=row[1]) for row in cur.fetchall()]
     # g.db.close()
+
+    #now, using squalchemy- fancy cause it's one line:
+    posts = db.session.query(BlogPost).all()
     return render_template ("index.html", posts = posts)
 
 #route for welcome
