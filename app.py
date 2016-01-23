@@ -32,7 +32,7 @@ def home():
     #listcomp in python- generates a list with the rows the dicts that the cur.fetchall spit out
     posts = [dict(title = row[0], description=row[1]) for row in cur.fetchall()]
     g.db.close()
-     return render_template ("index.html", posts = posts)
+    return render_template ("index.html", posts = posts)
 
 #route for welcome
 @app.route('/welcome')
@@ -48,7 +48,7 @@ def login():
             error = 'Invalid Credentials. Please try again.'
         else:
         	session['logged_in'] = True
-        	flash('good job, you logged in')
+        	flash('you were just logged in')
         	return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
