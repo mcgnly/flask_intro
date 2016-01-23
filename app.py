@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 db = SQLAlchemy(app)
 
 #only now can we import the model, bc only now the db object exists
-from model import * #by * we mean BlogPost, but whatever
+from models import * #by * we mean BlogPost, but whatever
 
 # login required decorator
 def login_required(f):
